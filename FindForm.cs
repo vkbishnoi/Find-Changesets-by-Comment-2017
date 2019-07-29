@@ -54,7 +54,7 @@
         /// </summary>
         public FindForm()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         /// <summary>
@@ -63,34 +63,34 @@
         /// <param name="automationObject">The automation object.</param>
         public FindForm(DTE2 automationObject) : this()
         {
-            this.AutomationObject = automationObject;
-            this.versionControlExt = (VersionControlExt)this.AutomationObject.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt");
-            this.versionControlServer = this.versionControlExt.Explorer.Workspace.VersionControlServer;
-            this.ContainingFileText.Text = this.versionControlExt.Explorer.CurrentFolderItem.SourceServerPath;
-            this.FromDatePicker.Value = DateTime.Now - new TimeSpan(28, 0, 0, 0);
-            this.ToDatePicker.Value = DateTime.Now;
+            AutomationObject = automationObject;
+            versionControlExt = (VersionControlExt)this.AutomationObject.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt");
+            versionControlServer = versionControlExt.Explorer.Workspace.VersionControlServer;
+            ContainingFileText.Text = versionControlExt.Explorer.CurrentFolderItem.SourceServerPath;
+            FromDatePicker.Value = DateTime.Now - new TimeSpan(28, 0, 0, 0);
+            ToDatePicker.Value = DateTime.Now;
         }
 
         /// <summary>
         /// Handles the Click event of the FindButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void FindButton_Click(object sender, EventArgs e)
         {
             // Check that we have a folder to search
-            if (string.IsNullOrWhiteSpace(this.ContainingFileText.Text))
+            if (string.IsNullOrWhiteSpace(ContainingFileText.Text))
             {
                 MessageBox.Show("Please specify a source control folder to search", "Find Changeset By Comment", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             // Check that we have a valid regular expression
-            if (this.useRegularExpressions.Checked && !string.IsNullOrWhiteSpace(this.ContainingCommentText.Text))
+            if (useRegularExpressions.Checked && !string.IsNullOrWhiteSpace(ContainingCommentText.Text))
             {
                 try
                 {
-                    Regex rx = new Regex(this.ContainingCommentText.Text);
+                    Regex rx = new Regex(ContainingCommentText.Text);
                 }
                 catch (ArgumentException)
                 {
@@ -99,45 +99,45 @@
                 }
             }
 
-            this.searchCriteria.SearchFile = this.ContainingFileText.Text.Trim();
-            this.searchCriteria.SearchUser = this.ByUserText.Text;
-            this.searchCriteria.FromDateVersion = this.FromDatePicker.Checked ? new DateVersionSpec(this.FromDatePicker.Value) : null;
-            this.searchCriteria.ToDateVersion = this.ToDatePicker.Checked ? new DateVersionSpec(this.ToDatePicker.Value) : null;
-            this.searchCriteria.SearchComment = this.ContainingCommentText.Text;
-            this.searchCriteria.UseRegex = this.useRegularExpressions.Checked;
-            this.ResultsList.Items.Clear();
-            this.FilesList.Items.Clear();
-            this.FindButton.Enabled = false;
-            this.FindChangesetsWorker.RunWorkerAsync();
+            searchCriteria.SearchFile = ContainingFileText.Text.Trim();
+            searchCriteria.SearchUser = ByUserText.Text;
+            searchCriteria.FromDateVersion = FromDatePicker.Checked ? new DateVersionSpec(FromDatePicker.Value) : null;
+            searchCriteria.ToDateVersion = ToDatePicker.Checked ? new DateVersionSpec(ToDatePicker.Value) : null;
+            searchCriteria.SearchComment = ContainingCommentText.Text;
+            searchCriteria.UseRegex = useRegularExpressions.Checked;
+            ResultsList.Items.Clear();
+            FilesList.Items.Clear();
+            FindButton.Enabled = false;
+            FindChangesetsWorker.RunWorkerAsync();
         }
 
         /// <summary>
         /// Handles the Click event of the CloseButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CloseButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         /// <summary>
         /// Handles the DoubleClick event of the ResultsList control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ResultsList_DoubleClick(object sender, EventArgs e)
         {
-            if (this.ResultsList.SelectedItems.Count == 0)
+            if (ResultsList.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            foreach (Changeset changeset in this.changes)
+            foreach (Changeset changeset in changes)
             {
-                if (changeset.ChangesetId.ToString() == this.ResultsList.SelectedItems[0].Text)
+                if (changeset.ChangesetId.ToString() == ResultsList.SelectedItems[0].Text)
                 {
-                    this.versionControlExt.ViewChangesetDetails(changeset.ChangesetId);
+                    versionControlExt.ViewChangesetDetails(changeset.ChangesetId);
                     break;
                 }
             }
@@ -147,7 +147,7 @@
         /// Handles the Load event of the FindForm control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void FindForm_Load(object sender, EventArgs e)
         {
             // Do any initiailization here
@@ -157,14 +157,14 @@
         /// Handles the Click event of the CopyButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CopyButton_Click(object sender, EventArgs e)
         {
-            StringBuilder clipboardText = new StringBuilder();
-            if (this.ChangesetsAndFiles.SelectedTab == this.ChangesetList)
+            var clipboardText = new StringBuilder();
+            if (ChangesetsAndFiles.SelectedTab == ChangesetList)
             {
                 // Copy list of changesets
-                foreach (Changeset changeset in this.changes)
+                foreach (Changeset changeset in changes)
                 {
                     clipboardText.AppendLine(string.Format("{0}\t{1}\t{2}\t{3}", changeset.ChangesetId, changeset.Owner, changeset.CreationDate, changeset.Comment));
                 }
@@ -172,7 +172,7 @@
             else
             {
                 // Copy list of files
-                foreach (string listItem in this.FilesList.Items)
+                foreach (string listItem in FilesList.Items)
                 {
                     clipboardText.AppendLine(listItem);
                 }
@@ -192,15 +192,15 @@
         /// Handles the DoWork event of the FindChangesetsWorker control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-        private void FindChangesetsWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <param name="e">The <see cref="DoWorkEventArgs"/> instance containing the event data.</param>
+        private void FindChangesetsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // Do not access the form's BackgroundWorker reference directly.
             // Instead, use the reference provided by the sender parameter.
-            BackgroundWorker bw = sender as BackgroundWorker;
+            var bw = sender as BackgroundWorker;
 
             // Start looking for changesets
-            e.Result = this.FindChangesetsByComment(bw, this.searchCriteria);
+            e.Result = FindChangesetsByComment(bw, searchCriteria);
 
             // If the operation was canceled by the user, 
             // set the DoWorkEventArgs.Cancel property to true.
@@ -214,8 +214,8 @@
         /// Handles the RunWorkerCompleted event of the FindChangesetsWorker control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.ComponentModel.RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
-        private void FindChangesetsWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        /// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void FindChangesetsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
@@ -232,13 +232,13 @@
             {
                 // The operation completed normally.
                 // Check for zero things found
-                if (this.changes.Count == 0)
+                if (changes.Count == 0)
                 {
                     MessageBox.Show("No changesets found matching the search criteria", "Find Changeset By Comment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
 
-            this.FindButton.Enabled = true;
+            FindButton.Enabled = true;
         }
 
         /// <summary>
@@ -249,11 +249,11 @@
         /// <returns>An error code</returns>
         private int FindChangesetsByComment(BackgroundWorker bw, SearchCriteria sc)
         {
-            this.changes.Clear();
-            this.files.Clear();
+            changes.Clear();
+            files.Clear();
             try
             {
-                IEnumerable changesets = this.versionControlServer.QueryHistory(
+                IEnumerable changesets = versionControlServer.QueryHistory(
                     sc.SearchFile,
                     VersionSpec.Latest,
                     0,
@@ -275,13 +275,13 @@
                         (!sc.UseRegex && changeset.Comment.IndexOf(sc.SearchComment.Trim(), StringComparison.CurrentCultureIgnoreCase) != -1) ||
                         (sc.UseRegex && Regex.IsMatch(changeset.Comment, sc.SearchComment)))
                     {
-                        this.changes.Add(changeset);
+                        changes.Add(changeset);
                         bw.ReportProgress(0, changeset);
                         foreach (Change change in changeset.Changes)
                         {
-                            if (!this.files.Contains(change.Item.ServerItem))
+                            if (!files.Contains(change.Item.ServerItem))
                             {
-                                this.files.Add(change.Item.ServerItem);
+                                files.Add(change.Item.ServerItem);
                                 bw.ReportProgress(0, change.Item.ServerItem);
                             }
                         }
@@ -301,12 +301,12 @@
         /// Handles the Click event of the CancelButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CancelFindButton_Click(object sender, EventArgs e)
         {
-            if (this.FindChangesetsWorker.IsBusy)
+            if (FindChangesetsWorker.IsBusy)
             {
-                this.FindChangesetsWorker.CancelAsync();
+                FindChangesetsWorker.CancelAsync();
             }
         }
 
@@ -314,18 +314,18 @@
         /// Handles the ProgressChanged event of the FindChangesetsWorker control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
         private void FindChangesetsWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState is Changeset)
             {
-                Changeset changeset = e.UserState as Changeset;
-                this.ResultsList.Items.Add(new ListViewItem(new string[] { changeset.ChangesetId.ToString(), changeset.Owner, changeset.CreationDate.ToString(), changeset.Comment }));
+                var changeset = e.UserState as Changeset;
+                ResultsList.Items.Add(new ListViewItem(new string[] { changeset.ChangesetId.ToString(), changeset.Owner, changeset.CreationDate.ToString(), changeset.Comment }));
             }
             else
             {
                 string file = e.UserState as string;
-                this.FilesList.Items.Add(file);
+                FilesList.Items.Add(file);
             }
         }
 
@@ -393,12 +393,12 @@
         /// Handles the KeyUp event of the ResultsList control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.Forms.KeyEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
         private void ResultsList_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space)
             {
-                this.ResultsList_DoubleClick(sender, null);
+                ResultsList_DoubleClick(sender, null);
             }
         }
     }

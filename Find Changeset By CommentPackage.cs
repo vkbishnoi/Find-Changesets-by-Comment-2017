@@ -64,13 +64,12 @@
             base.Initialize();
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if ( null != mcs )
+            if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
                 // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidList.guidFind_Changeset_By_CommentCmdSet, (int)PkgCmdIDList.cmdFindChangesetByComment);
-                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
-                mcs.AddCommand( menuItem );
+                var menuCommandID = new CommandID(GuidList.guidFind_Changeset_By_CommentCmdSet, (int)PkgCmdIDList.cmdFindChangesetByComment);
+                var menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
+                mcs.AddCommand(menuItem);
             }
         }
 
