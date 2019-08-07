@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="FindChangeset.566d0995-d856-4443-a843-26084960ba94" Version="1.0" Language="en-US" Publisher="Vishal Bishnoi" />
+        <Identity Id="FindChangeset.6f66a3f0-4bf2-4d95-92bb-d2344410aff8" Version="1.0" Language="en-US" Publisher="Vishal Bishnoi" />
         <DisplayName>Find Changeset By Comment 2019</DisplayName>
         <Description>This extension is used to find changesets that contain a specific phrase in a comment.</Description>
     </Metadata>
